@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Plano Inclinado</title>
+  <style>
+    :root {
+      --bg: #edf1f5;
+      --shell: #ffffff;
+      --card: #ffffff;
+      --soft: #f8fafc;
+      --border: #e5e7eb;
+      --text: #111827;
+      --muted: #6b7280;
+      --primary: #111827;
+      --primary-hover: #1f2937;
+      --secondary: #ffffff;
+      --success: #0f766e;
+      --danger: #dc2626;
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --shadow: 0 18px 45px rgba(17, 24, 39, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 28px;
+    }
+
+    .app {
+      max-width: 1350px;
+      margin: 0 auto;
+      background: var(--shell);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .page {
+      padding: 28px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+    }
+
+    .page-header p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: .98rem;
+      max-width: 720px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--secondary);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 13px 18px;
+      font-size: .95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(360px, .95fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 22px;
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .panel-title h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .panel-title span {
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    .section + .section {
+      margin-top: 22px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .section h4 {
+      margin: 0 0 14px;
+      font-size: .95rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+    }
+
+    .field {
+      grid-column: span 12;
+    }
+
+    .col-6 {
+      grid-column: span 6;
+    }
+
+    .col-4 {
+      grid-column: span 4;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: .88rem;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    input, select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: .95rem;
+      background: white;
+      color: var(--text);
+      transition: .2s ease;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #c7d2fe;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .pill {
+      background: var(--soft);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      font-size: .92rem;
+    }
+
+    .pill strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .formula-box {
+      background: linear-gradient(180deg, #fafbfc 0%, #f5f7fb 100%);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      line-height: 1.75;
+      color: #334155;
+      font-size: .94rem;
+    }
+
+    .formula-box code {
+      background: #e5e7eb;
+      padding: 2px 8px;
+      border-radius: 8px;
+      color: #111827;
+      font-weight: 700;
+    }
+
+    .result-wrap {
+      background: #f5f7fb;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 16px;
+    }
+
+    .result-card {
+      background: white;
+      border: 1px solid #edf2f7;
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 8px 25px rgba(15, 23, 42, 0.04);
+    }
+
+    .hero-result {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .metric {
+      border: 1px solid #edf2f7;
+      border-radius: 18px;
+      padding: 16px;
+      background: #fafcff;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: .84rem;
+      margin-bottom: 8px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .summary-box {
+      background: linear-gradient(180deg, #fafbfc 0%, #f5f7fb 100%);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+
+    .summary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 8px 0;
+      font-size: .95rem;
+      color: #334155;
+    }
+
+    .summary-row strong {
+      color: var(--text);
+    }
+
+    .steps {
+      background: white;
+      border: 1px solid #edf2f7;
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .steps h4 {
+      margin: 0 0 12px;
+      font-size: .95rem;
+    }
+
+    .step {
+      padding: 12px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: .93rem;
+      color: #334155;
+      line-height: 1.7;
+    }
+
+    .step:last-child {
+      border-bottom: none;
+    }
+
+    .step strong {
+      color: var(--text);
+    }
+
+    .status {
+      margin-bottom: 16px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      font-size: .92rem;
+      font-weight: 700;
+      display: block;
+    }
+
+    .status.ok {
+      background: #ecfeff;
+      border: 1px solid #ccfbf1;
+      color: var(--success);
+    }
+
+    .status.error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: var(--danger);
+    }
+
+    .mini-note {
+      color: var(--muted);
+      font-size: .86rem;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 1180px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 860px) {
+      body {
+        padding: 16px;
+      }
+
+      .page {
+        padding: 18px;
+      }
+
+      .page-header {
+        flex-direction: column;
+      }
+
+      .header-actions {
+        width: 100%;
+      }
+
+      .header-actions .btn {
+        flex: 1;
+      }
+
+      .col-6, .col-4 {
+        grid-column: span 12;
+      }
+
+      .hero-result {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <main class="page">
+      <section class="page-header">
+        <div>
+          <h1>Calculadora de W1 y W2</h1>
+          <p>
+            Calcula el peso desconocido en un sistema de plano inclinado con fricción,
+            mostrando el procedimiento paso a paso y el resultado en libras y gramos.
+          </p>
+        </div>
+
+        <div class="header-actions">
+          <button class="btn" id="clearBtn">Limpiar</button>
+          <button class="btn btn-primary" id="calcBtn">Calcular</button>
+        </div>
+      </section>
+
+      <section class="layout">
+        <div class="panel">
+          <div class="panel-title">
+            <h3>Datos del problema</h3>
+            <span>Entrada</span>
+          </div>
+
+          <div class="section">
+            <h4>Qué deseas calcular</h4>
+            <div class="grid">
+              <div class="field col-6">
+                <label for="modo">Modo de cálculo</label>
+                <select id="modo">
+                  <option value="w2">Calcular W2 usando W1</option>
+                  <option value="w1">Calcular W1 usando W2</option>
+                </select>
+              </div>
+
+              <div class="field col-6">
+                <label for="movimiento">Movimiento sobre el plano</label>
+                <select id="movimiento">
+                  <option value="sube">El bloque sube por el plano</option>
+                  <option value="baja">El bloque baja por el plano</option>
+                </select>
+              </div>
+
+              <div class="field col-6">
+                <label for="unidad">Unidad del peso ingresado</label>
+                <select id="unidad">
+                  <option value="lb">Libras (lb)</option>
+                  <option value="g">Gramos (g)</option>
+                </select>
+              </div>
+
+              <div class="field col-6">
+                <label for="pesoConocido" id="labelPeso">W1 conocido</label>
+                <input type="number" id="pesoConocido" step="0.01" />
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h4>Parámetros físicos</h4>
+            <div class="grid">
+              <div class="field col-6">
+                <label for="angulo">Ángulo θ (grados)</label>
+                <input type="number" id="angulo" step="0.01" />
+              </div>
+
+              <div class="field col-6">
+                <label for="mu">Coeficiente de fricción μ</label>
+                <input type="number" id="mu" step="0.01" />
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h4>Resumen del modelo</h4>
+            <div class="segmented">
+              <div class="pill">
+                <strong>Normal</strong>
+                N = W1 · cos(θ)
+              </div>
+              <div class="pill">
+                <strong>Componente paralela</strong>
+                W∥ = W1 · sin(θ)
+              </div>
+              <div class="pill">
+                <strong>Fricción</strong>
+                Ff = μ · N
+              </div>
+              <div class="pill">
+                <strong>Tensión</strong>
+                T = W2
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h4>Fórmulas usadas</h4>
+            <div class="formula-box">
+              <div><code>Si sube:</code> T = W∥ + Ff</div>
+              <div><code>Si baja:</code> T = W∥ - Ff</div>
+              <div><code>W2 = T</code></div>
+              <div style="margin-top: 10px;">
+                El programa convierte internamente a libras para calcular
+                y luego muestra resultados en <strong>lb</strong> y <strong>g</strong>.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">
+            <h3>Resultado</h3>
+            <span>Salida</span>
+          </div>
+
+          <div id="statusBox" class="status ok">Ingresa los datos y presiona calcular.</div>
+
+          <div class="result-wrap">
+            <div class="result-card">
+              <div class="hero-result">
+                <div class="metric">
+                  <span>W1</span>
+                  <strong id="w1Main">-</strong>
+                  <div class="mini-note" id="w1Alt">-</div>
+                </div>
+
+                <div class="metric">
+                  <span>W2</span>
+                  <strong id="w2Main">-</strong>
+                  <div class="mini-note" id="w2Alt">-</div>
+                </div>
+              </div>
+
+              <div class="summary-box">
+                <div class="summary-row">
+                  <span>Normal (N)</span>
+                  <strong id="nText">-</strong>
+                </div>
+                <div class="summary-row">
+                  <span>Componente paralela (W∥)</span>
+                  <strong id="wpText">-</strong>
+                </div>
+                <div class="summary-row">
+                  <span>Fricción (Ff)</span>
+                  <strong id="ffText">-</strong>
+                </div>
+                <div class="summary-row">
+                  <span>Tensión (T)</span>
+                  <strong id="tText">-</strong>
+                </div>
+              </div>
+
+              <div class="steps" id="stepsBox">
+                <h4>Procedimiento paso a paso</h4>
+                <div class="step">Aquí aparecerán los pasos del cálculo.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const LB_TO_G = 453.592;
+
+    const modo = document.getElementById("modo");
+    const movimiento = document.getElementById("movimiento");
+    const unidad = document.getElementById("unidad");
+    const pesoConocido = document.getElementById("pesoConocido");
+    const angulo = document.getElementById("angulo");
+    const mu = document.getElementById("mu");
+    const labelPeso = document.getElementById("labelPeso");
+    const statusBox = document.getElementById("statusBox");
+
+    function round(value, decimals = 4) {
+      return Number(value).toFixed(decimals);
+    }
+
+    function gramsToLb(g) {
+      return g / LB_TO_G;
+    }
+
+    function lbToGrams(lb) {
+      return lb * LB_TO_G;
+    }
+
+    function formatDual(lb) {
+      return `${round(lb)} lb | ${round(lbToGrams(lb))} g`;
+    }
+
+    function updateLabel() {
+      const unitText = unidad.value === "lb" ? "(lb)" : "(g)";
+      labelPeso.textContent = modo.value === "w2"
+        ? `W1 conocido ${unitText}`
+        : `W2 conocido ${unitText}`;
+    }
+
+    function setStatus(message, type = "ok") {
+      statusBox.className = `status ${type}`;
+      statusBox.textContent = message;
+    }
+
+    function renderStep(text) {
+      return `<div class="step">${text}</div>`;
+    }
+
+    function calculate() {
+      const mode = modo.value;
+      const move = movimiento.value;
+      const unit = unidad.value;
+      const known = parseFloat(pesoConocido.value);
+      const thetaDeg = parseFloat(angulo.value);
+      const muValue = parseFloat(mu.value);
+
+      if (isNaN(known) || isNaN(thetaDeg) || isNaN(muValue)) {
+        setStatus("Completa todos los campos con valores numéricos válidos.", "error");
+        return;
+      }
+
+      if (known <= 0) {
+        setStatus("El peso conocido debe ser mayor que 0.", "error");
+        return;
+      }
+
+      if (thetaDeg <= 0 || thetaDeg >= 90) {
+        setStatus("El ángulo debe ser mayor que 0 y menor que 90 grados.", "error");
+        return;
+      }
+
+      if (muValue < 0) {
+        setStatus("El coeficiente de fricción no puede ser negativo.", "error");
+        return;
+      }
+
+      const theta = thetaDeg * Math.PI / 180;
+      const sin = Math.sin(theta);
+      const cos = Math.cos(theta);
+
+      const factor = move === "sube"
+        ? sin + muValue * cos
+        : sin - muValue * cos;
+
+      if (factor <= 0) {
+        setStatus("Con esos valores, el resultado no es físicamente válido para ese sentido de movimiento.", "error");
+        return;
+      }
+
+      const knownLb = unit === "lb" ? known : gramsToLb(known);
+
+      let W1_lb, W2_lb, N_lb, Wpar_lb, Ff_lb, T_lb;
+      const sign = move === "sube" ? "+" : "-";
+
+      if (mode === "w2") {
+        W1_lb = knownLb;
+        N_lb = W1_lb * cos;
+        Wpar_lb = W1_lb * sin;
+        Ff_lb = muValue * N_lb;
+        T_lb = move === "sube" ? Wpar_lb + Ff_lb : Wpar_lb - Ff_lb;
+        W2_lb = T_lb;
+      } else {
+        W2_lb = knownLb;
+        W1_lb = W2_lb / factor;
+        N_lb = W1_lb * cos;
+        Wpar_lb = W1_lb * sin;
+        Ff_lb = muValue * N_lb;
+        T_lb = W2_lb;
+      }
+
+      document.getElementById("w1Main").textContent = `${round(W1_lb)} lb`;
+      document.getElementById("w1Alt").textContent = `${round(lbToGrams(W1_lb))} g`;
+
+      document.getElementById("w2Main").textContent = `${round(W2_lb)} lb`;
+      document.getElementById("w2Alt").textContent = `${round(lbToGrams(W2_lb))} g`;
+
+      document.getElementById("nText").textContent = formatDual(N_lb);
+      document.getElementById("wpText").textContent = formatDual(Wpar_lb);
+      document.getElementById("ffText").textContent = formatDual(Ff_lb);
+      document.getElementById("tText").textContent = formatDual(T_lb);
+
+      const knownText = unit === "lb"
+        ? `${known} lb`
+        : `${known} g = ${round(knownLb)} lb`;
+
+      const stepsHtml = `
+        <h4>Procedimiento paso a paso</h4>
+        ${renderStep(`<strong>1.</strong> Dato ingresado: <strong>${mode === "w2" ? "W1" : "W2"}</strong> = ${knownText}`)}
+        ${mode === "w2"
+          ? renderStep(`<strong>2.</strong> Normal: <strong>N = W1 · cos(θ)</strong><br>N = ${round(W1_lb)} · cos(${round(thetaDeg, 2)}°) = <strong>${round(N_lb)} lb</strong> = <strong>${round(lbToGrams(N_lb))} g</strong>`)
+          : renderStep(`<strong>2.</strong> Primero despejamos W1:<br><strong>W1 = W2 / (sinθ ${sign} μcosθ)</strong><br>W1 = ${round(W2_lb)} / (${round(sin)} ${sign} ${round(muValue)}·${round(cos)}) = <strong>${round(W1_lb)} lb</strong> = <strong>${round(lbToGrams(W1_lb))} g</strong>`)
+        }
+        ${mode === "w2"
+          ? renderStep(`<strong>3.</strong> Componente paralela: <strong>W∥ = W1 · sin(θ)</strong><br>W∥ = ${round(W1_lb)} · sin(${round(thetaDeg, 2)}°) = <strong>${round(Wpar_lb)} lb</strong> = <strong>${round(lbToGrams(Wpar_lb))} g</strong>`)
+          : renderStep(`<strong>3.</strong> Normal: <strong>N = W1 · cos(θ)</strong><br>N = ${round(W1_lb)} · cos(${round(thetaDeg, 2)}°) = <strong>${round(N_lb)} lb</strong> = <strong>${round(lbToGrams(N_lb))} g</strong>`)
+        }
+        ${mode === "w2"
+          ? renderStep(`<strong>4.</strong> Fricción: <strong>Ff = μ · N</strong><br>Ff = ${round(muValue)} · ${round(N_lb)} = <strong>${round(Ff_lb)} lb</strong> = <strong>${round(lbToGrams(Ff_lb))} g</strong>`)
+          : renderStep(`<strong>4.</strong> Componente paralela: <strong>W∥ = W1 · sin(θ)</strong><br>W∥ = ${round(W1_lb)} · sin(${round(thetaDeg, 2)}°) = <strong>${round(Wpar_lb)} lb</strong> = <strong>${round(lbToGrams(Wpar_lb))} g</strong>`)
+        }
+        ${mode === "w2"
+          ? renderStep(`<strong>5.</strong> Ecuación sobre el plano: <strong>T = W∥ ${sign} Ff</strong><br>T = ${round(Wpar_lb)} ${sign} ${round(Ff_lb)} = <strong>${round(T_lb)} lb</strong> = <strong>${round(lbToGrams(T_lb))} g</strong>`)
+          : renderStep(`<strong>5.</strong> Fricción: <strong>Ff = μ · N</strong><br>Ff = ${round(muValue)} · ${round(N_lb)} = <strong>${round(Ff_lb)} lb</strong> = <strong>${round(lbToGrams(Ff_lb))} g</strong>`)
+        }
+        ${mode === "w2"
+          ? renderStep(`<strong>6.</strong> Como <strong>T = W2</strong>, entonces:<br><strong>W2 = ${round(W2_lb)} lb</strong> = <strong>${round(lbToGrams(W2_lb))} g</strong>`)
+          : renderStep(`<strong>6.</strong> Verificación con la ecuación: <strong>T = W∥ ${sign} Ff</strong><br>T = ${round(Wpar_lb)} ${sign} ${round(Ff_lb)} = <strong>${round(T_lb)} lb</strong> = <strong>${round(lbToGrams(T_lb))} g</strong><br>Como <strong>T = W2</strong>, el dato coincide.`)
+        }
+      `;
+
+      document.getElementById("stepsBox").innerHTML = stepsHtml;
+      setStatus("Cálculo realizado correctamente.", "ok");
+    }
+
+    function clearForm() {
+      modo.value = "w2";
+      movimiento.value = "sube";
+      unidad.value = "lb";
+      pesoConocido.value = "";
+      angulo.value = "";
+      mu.value = "";
+      updateLabel();
+      setStatus("Ingresa los datos y presiona calcular.", "ok");
+
+      document.getElementById("w1Main").textContent = "-";
+      document.getElementById("w1Alt").textContent = "-";
+      document.getElementById("w2Main").textContent = "-";
+      document.getElementById("w2Alt").textContent = "-";
+      document.getElementById("nText").textContent = "-";
+      document.getElementById("wpText").textContent = "-";
+      document.getElementById("ffText").textContent = "-";
+      document.getElementById("tText").textContent = "-";
+      document.getElementById("stepsBox").innerHTML = "<h4>Procedimiento paso a paso</h4><div class='step'>Aquí aparecerán los pasos del cálculo.</div>";
+    }
+
+    document.getElementById("calcBtn").addEventListener("click", calculate);
+    document.getElementById("clearBtn").addEventListener("click", clearForm);
+    modo.addEventListener("change", updateLabel);
+    unidad.addEventListener("change", updateLabel);
+
+    updateLabel();
+  </script>
+</body>
+</html>
