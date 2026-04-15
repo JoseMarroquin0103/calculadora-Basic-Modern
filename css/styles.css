@@ -60,12 +60,13 @@
     display: flex;
 }
 
-.valor-ingresado-1, .valor-ingresado-2, .mostrar-operador {
+.operacion-ingresado {
     font-size: 2rem;
     font-weight: 400;
     opacity: .65;
     color: var(--color-texto-tres);
     display: none;
+    text-align: end;
 }
 
 .result-operacion {

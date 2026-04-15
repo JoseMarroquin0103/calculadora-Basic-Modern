@@ -1,12 +1,20 @@
 // Constantes
 const valorIngresado = document.querySelector('.input-num');
-const valorIngresadoUno = document.querySelector('.valor-ingresado-1');
-const valorIngresadoDos = document.querySelector('.valor-ingresado-2');
-const valorOperadorPantalla = document.querySelector('.mostrar-operador');
+const valorIngresadoUno = document.querySelector('.operacion-ingresado');
 const resultado = document.querySelector('.result-operacion');
 const botonesNumericos = document.querySelectorAll('.btn-num');
 const botonesOperadores = document.querySelectorAll('.btn-op');
 
+// Funciones
+// Función para mostrar la operación
+function pantallaMostrarOperacion(signoOperar){
+    valorIngresadoUno.textContent += valorIngresado.textContent;
+    valorIngresadoUno.textContent += signoOperar.value;
+
+    valorIngresadoUno.style.display = 'block';
+                
+    valorIngresado.textContent = "0";
+}
 
 // Mostrar numeros en pantalla calculadora
 botonesNumericos.forEach((valorNumero) => {
@@ -24,18 +32,17 @@ botonesOperadores.forEach((valorOperador) => {
         let operador = valorOperador.value;
 
         switch(operador){
+            case "÷":
+                pantallaMostrarOperacion(valorOperador);
+                break;
+            case "x":
+                pantallaMostrarOperacion(valorOperador);
+                break;
+            case "-":
+                pantallaMostrarOperacion(valorOperador);
+                break;
             case "+":
-                valorIngresadoUno.textContent = valorIngresado.textContent;
-                valorOperadorPantalla.textContent = valorOperador.value;
-
-                valorIngresadoUno.style.display = 'block';
-                valorOperadorPantalla.style.display = 'block';
-
-                if(valorIngresadoUno.textContent === valorIngresado.textContent){
-                    valorIngresado.textContent = "0";
-                }else{
-                    valorIngresadoDos.textContent += valorIngresado.textContent;
-                }
+                pantallaMostrarOperacion(valorOperador);
                 break;
             case "=":
                 valorIngresadoDos.textContent = valorIngresado.textContent;
