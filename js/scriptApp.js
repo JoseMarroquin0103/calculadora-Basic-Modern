@@ -16,6 +16,22 @@ function pantallaMostrarOperacion(signoOperar){
     valorIngresado.textContent = "0";
 }
 
+// Función para operar y mostrar el resultado
+function realizarCalculoMostrar(){
+    let reemplazarOperadores = valorIngresadoUno.textContent.replace("÷", "/").replace("x","*");
+    let obtenerUltimoValor = valorIngresado.textContent;
+
+    let unirOperaciones = reemplazarOperadores + obtenerUltimoValor;
+
+    let resultadoOperacion = eval(unirOperaciones); // Opera todos los terminos
+    
+    resultado.textContent = Number(resultadoOperacion.toFixed(2));
+
+    valorIngresadoUno.textContent = unirOperaciones.replace("/","÷").replace("*","x");
+    resultado.style.display = "block";
+    valorIngresado.style.display = "none";
+}
+
 // Mostrar numeros en pantalla calculadora
 botonesNumericos.forEach((valorNumero) => {
     valorNumero.addEventListener("click", function(){
@@ -45,13 +61,7 @@ botonesOperadores.forEach((valorOperador) => {
                 pantallaMostrarOperacion(valorOperador);
                 break;
             case "=":
-                valorIngresadoDos.textContent = valorIngresado.textContent;
-
-                valorIngresadoDos.style.display = 'block';
-
-                if(valorIngresado.textContent === valorIngresadoDos.textContent){
-                    valorIngresado.textContent = "0";
-                }
+                realizarCalculoMostrar();
                 break;
         }
     });
