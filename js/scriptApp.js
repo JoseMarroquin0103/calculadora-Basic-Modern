@@ -1,67 +1,67 @@
 // Constantes
-const valorIngresado = document.querySelector('.input-num');
-const valorIngresadoUno = document.querySelector('.operacion-ingresado');
-const resultado = document.querySelector('.result-operacion');
-const botonesNumericos = document.querySelectorAll('.btn-num');
-const botonesOperadores = document.querySelectorAll('.btn-op');
+const currentDisplay = document.querySelector('.input-num');
+const operationDisplay = document.querySelector('.operacion-ingresado');
+const resultDisplay = document.querySelector('.result-operacion');
+const buttonNumber = document.querySelectorAll('.btn-num');
+const buttonOperator = document.querySelectorAll('.btn-op');
 
 // Funciones
 // Función para mostrar la operación
-function pantallaMostrarOperacion(signoOperar){
-    valorIngresadoUno.textContent += valorIngresado.textContent;
-    valorIngresadoUno.textContent += signoOperar.value;
+function appendOperator(signoOperar){
+    operationDisplay.textContent += currentDisplay.textContent;
+    operationDisplay.textContent += signoOperar.value;
 
-    valorIngresadoUno.style.display = 'block';
+    operationDisplay.style.display = 'block';
                 
-    valorIngresado.textContent = "0";
+    currentDisplay.textContent = "0";
 }
 
 // Función para operar y mostrar el resultado
-function realizarCalculoMostrar(){
-    let reemplazarOperadores = valorIngresadoUno.textContent.replace("÷", "/").replace("x","*");
-    let obtenerUltimoValor = valorIngresado.textContent;
+function calculateResult(){
+    let reemplazarOperadores = operationDisplay.textContent.replace("÷", "/").replace("x","*");
+    let obtenerUltimoValor = currentDisplay.textContent;
 
     let unirOperaciones = reemplazarOperadores + obtenerUltimoValor;
 
     let resultadoOperacion = eval(unirOperaciones); // Opera todos los terminos
     
-    resultado.textContent = Number(resultadoOperacion.toFixed(2));
+    resultDisplay.textContent = Number(resultadoOperacion.toFixed(2));
 
-    valorIngresadoUno.textContent = unirOperaciones.replace("/","÷").replace("*","x");
-    resultado.style.display = "block";
-    valorIngresado.style.display = "none";
+    operationDisplay.textContent = unirOperaciones.replace("/","÷").replace("*","x");
+    resultDisplay.style.display = "block";
+    currentDisplay.style.display = "none";
 }
 
 // Mostrar numeros en pantalla calculadora
-botonesNumericos.forEach((valorNumero) => {
+buttonNumber.forEach((valorNumero) => {
     valorNumero.addEventListener("click", function(){
-        if(valorIngresado.textContent === "0"){
-            valorIngresado.textContent = valorNumero.value;
+        if(currentDisplay.textContent === "0"){
+            currentDisplay.textContent = valorNumero.value;
         }else{
-            valorIngresado.textContent += valorNumero.value;
+            currentDisplay.textContent += valorNumero.value;
         }
     });
 });
 
-botonesOperadores.forEach((valorOperador) => {
+buttonOperator.forEach((valorOperador) => {
     valorOperador.addEventListener("click", function(){
         let operador = valorOperador.value;
 
         switch(operador){
             case "÷":
-                pantallaMostrarOperacion(valorOperador);
+                appendOperator(valorOperador);
                 break;
             case "x":
-                pantallaMostrarOperacion(valorOperador);
+                appendOperator(valorOperador);
                 break;
             case "-":
-                pantallaMostrarOperacion(valorOperador);
+                appendOperator(valorOperador);
                 break;
             case "+":
-                pantallaMostrarOperacion(valorOperador);
+                appendOperator(valorOperador);
                 break;
             case "=":
-                realizarCalculoMostrar();
+                calculateResult();
                 break;
         }
     });
