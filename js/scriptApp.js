@@ -18,16 +18,14 @@ function appendOperator(signoOperar){
 
 // Función para operar y mostrar el resultado
 function calculateResult(){
-    let reemplazarOperadores = operationDisplay.textContent.replace("÷", "/").replace("x","*");
-    let obtenerUltimoValor = currentDisplay.textContent;
+    let replaceOperator = operationDisplay.textContent.replace("÷", "/").replace("x","*");
+    let joinTerms = replaceOperator + currentDisplay.textContent;
 
-    let unirOperaciones = reemplazarOperadores + obtenerUltimoValor;
-
-    let resultadoOperacion = eval(unirOperaciones); // Opera todos los terminos
+    let operationResult = eval(joinTerms); // Opera todos los terminos
     
-    resultDisplay.textContent = Number(resultadoOperacion.toFixed(2));
+    resultDisplay.textContent = Number(operationResult.toFixed(2));
 
-    operationDisplay.textContent = unirOperaciones.replace("/","÷").replace("*","x");
+    operationDisplay.textContent = joinTerms.replace("/","÷").replace("*","x");
     resultDisplay.style.display = "block";
     currentDisplay.style.display = "none";
 }
@@ -43,27 +41,13 @@ buttonNumber.forEach((valorNumero) => {
     });
 });
 
-buttonOperator.forEach((valorOperador) => {
-    valorOperador.addEventListener("click", function(){
-        let operador = valorOperador.value;
-
-        switch(operador){
-            case "÷":
-                appendOperator(valorOperador);
-                break;
-            case "x":
-                appendOperator(valorOperador);
-                break;
-            case "-":
-                appendOperator(valorOperador);
-                break;
-            case "+":
-                appendOperator(valorOperador);
-                break;
-            case "=":
-                calculateResult();
-                break;
+buttonOperator.forEach((operatorValue) => {
+    operatorValue.addEventListener("click", function(){
+        
+        if(operatorValue.value === "="){
+            calculateResult();
+        }else{
+            appendOperator(operatorValue);
         }
     });
 });
-
