@@ -21,8 +21,13 @@ function calculateResult(){
     let replaceOperator = operationDisplay.textContent.replace("÷", "/").replace("x","*");
     let joinTerms = replaceOperator + currentDisplay.textContent;
 
-    let operationResult = eval(joinTerms); // Opera todos los terminos
+    // let operationResult = eval(joinTerms); // Opera todos los terminos
     
+    console.log(joinTerms);
+
+    let arrayOperator = joinTerms.split("");
+    console.log(arrayOperator);
+
     resultDisplay.textContent = Number(operationResult.toFixed(2));
 
     operationDisplay.textContent = joinTerms.replace("/","÷").replace("*","x");
