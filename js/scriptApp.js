@@ -21,34 +21,40 @@ function calculateResult(){
     let replaceOperator = operationDisplay.textContent.replace("÷", "/").replace("x","*");
     let joinTerms = replaceOperator + currentDisplay.textContent;
 
-    // resultDisplay.textContent = Number(operationResult.toFixed(2));
+    if(!joinTerms) return;
+
+    // Convertimos los números de String a un Array
+    let parts = joinTerms.split(/([+\-*/])/).map(p => {
+        return (isNaN(p) || p.trim() === "") ? p : Number(p);
+    });
+
+    // Realizar múltiplicación y divisón
+    for(let i = 0; i < parts.length; i++){
+        if(parts[i] === "*" || parts[i] === "/"){
+            let res = parts[i] === "*"
+                ? parts[i - 1] * parts[i + 1]
+                : parts[i - 1] / parts[i + 1];
+            
+            parts.splice(i - 1, 3, res);
+            i--;
+        }
+    }
+
+    // Realizar suma y resta
+    let result = parts[0];
+    for(let i = 1; i < parts.length; i += 2){
+        let op = parts[i];
+        let num = parts[i+1];
+        if(op === "+") result += num;
+        if(op === "-") result -= num;
+    }
+
+    // Mostrar resultado
+    resultDisplay.textContent = Number(result.toFixed(2));
 
     operationDisplay.textContent = joinTerms.replace("/","÷").replace("*","x");
     resultDisplay.style.display = "block";
     currentDisplay.style.display = "none";
-}
-
-// Función para ir operando los valores ingresados
-function operatingTerms(){
-    // if(operationDisplay.textContent === ""){
-    //     console.log("El valor está vacio");
-    //     return;
-    // }
-
-    let firstValueEntered = currentDisplay.textContent;
-    let operatorPressed = buttonNumber;
-    let result = "";
-
-    if(operatorPressed.value === "+"){
-        if(currentDisplay.textContent === "0"){
-            console.log("Presiono 0");
-            return;
-        } else {
-            let sumValues = firstValueEntered + Number(currentDisplay.textContent);
-            console.log(sumValues);
-        }
-    }
-    
 }
 
 // Mostrar numeros en pantalla calculadora
@@ -69,7 +75,6 @@ buttonOperator.forEach((operatorValue) => {
             calculateResult();
         }else{
             appendOperator(operatorValue);
-            operatingTerms();
         }
     });
 });
