@@ -4,6 +4,8 @@ const operationDisplay = document.querySelector('.operacion-ingresado');
 const resultDisplay = document.querySelector('.result-operacion');
 const buttonNumber = document.querySelectorAll('.btn-num');
 const buttonOperator = document.querySelectorAll('.btn-op');
+const allClear = document.querySelector('.all-clear');
+const decimalPoint = document.querySelector('btn-deci');
 
 // Funciones
 // Función para mostrar la operación
@@ -68,6 +70,13 @@ buttonNumber.forEach((valorNumero) => {
     });
 });
 
+decimalPoint.addEventListener("click", function(){
+    if(currentDisplay.textContent === "0"){
+        currentDisplay.textContent += decimalPoint.value;
+    }
+    console.log("Se dio click al punto");
+});
+
 buttonOperator.forEach((operatorValue) => {
     operatorValue.addEventListener("click", function(){
         
@@ -77,4 +86,19 @@ buttonOperator.forEach((operatorValue) => {
             appendOperator(operatorValue);
         }
     });
+});
+
+// Limpiar datos de la calculadora
+allClear.addEventListener("click", function(){
+    // Restablecer historial de termino ingresado
+    operationDisplay.textContent = "";
+    operationDisplay.style.display = "none";
+
+    // Restablecer entrada de valores
+    currentDisplay.textContent = "0";
+    currentDisplay.style.display = "block";
+
+    // Restablecer donde muestra el resultado
+    resultDisplay.textContent = "0";
+    resultDisplay.style.display = "none";
 });
