@@ -5,7 +5,7 @@ const resultDisplay = document.querySelector('.result-operacion');
 const buttonNumber = document.querySelectorAll('.btn-num');
 const buttonOperator = document.querySelectorAll('.btn-op');
 const allClear = document.querySelector('.all-clear');
-const decimalPoint = document.querySelector('btn-deci');
+const decimalPoint = document.querySelector('.btn-deci');
 
 // Funciones
 // Función para mostrar la operación
@@ -70,11 +70,19 @@ buttonNumber.forEach((valorNumero) => {
     });
 });
 
-decimalPoint.addEventListener("click", function(){
-    if(currentDisplay.textContent === "0"){
-        currentDisplay.textContent += decimalPoint.value;
+// Agregar el punto decimal
+decimalPoint.addEventListener("click", () => {
+    let addDecimalPoint = currentDisplay.textContent.split(/([.])/).map(pd => {
+        return(isNaN(pd)) ? p : Number(pd);
+    });
+
+    for(let i = 0; i < addDecimalPoint.length; i++) {
+        if(addDecimalPoint[i] === "."){
+            return;
+        } else {
+            currentDisplay.textContent += decimalPoint.value;
+        }
     }
-    console.log("Se dio click al punto");
 });
 
 buttonOperator.forEach((operatorValue) => {
