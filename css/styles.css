@@ -109,11 +109,11 @@
     font-size: 1.5rem;
 }
 
-.btn-fn {
-    background-color: var(--color-boton-uno);
-    color: var(--color-texto-dos);
-}
-
 .btn-op {
     background-color: var(--color-boton-dos);
+}
+
+.btn-fn, .btn-percentage {
+    background-color: var(--color-boton-uno);
+    color: var(--color-texto-dos);
 }

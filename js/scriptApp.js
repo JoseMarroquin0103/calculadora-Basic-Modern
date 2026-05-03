@@ -4,6 +4,7 @@ const operationDisplay = document.querySelector('.operacion-ingresado');
 const resultDisplay = document.querySelector('.result-operacion');
 const buttonNumber = document.querySelectorAll('.btn-num');
 const buttonOperator = document.querySelectorAll('.btn-op');
+const buttonPercentage = document.querySelector(".btn-percentage");
 const allClear = document.querySelector('.all-clear');
 const decimalPoint = document.querySelector('.btn-deci');
 
@@ -71,17 +72,12 @@ buttonNumber.forEach((valorNumero) => {
 });
 
 // Agregar el punto decimal
-decimalPoint.addEventListener("click", () => {
-    let addDecimalPoint = currentDisplay.textContent.split(/([.])/).map(pd => {
-        return(isNaN(pd)) ? p : Number(pd);
-    });
-
-    for(let i = 0; i < addDecimalPoint.length; i++) {
-        if(addDecimalPoint[i] === "."){
-            return;
-        } else {
-            currentDisplay.textContent += decimalPoint.value;
-        }
+decimalPoint.addEventListener("click", function() {
+    // Evaluarl si ya hay un punto en el termino
+    if(currentDisplay.textContent.includes(".")){
+        return;
+    } else {
+        currentDisplay.textContent += decimalPoint.value;
     }
 });
 
