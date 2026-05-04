@@ -9,6 +9,17 @@ const buttonSign = document.querySelector(".btn-sign");
 const allClear = document.querySelector('.all-clear');
 const decimalPoint = document.querySelector('.btn-deci');
 
+function cleanNumber(value){
+    return String(value || "").replace(/,/g, "");
+}
+
+function formatNumber(value){
+    return Number(value).toLocaleString("en-US", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+    });
+}
+
 // Funciones
 // Función para mostrar la operación
 function appendOperator(signoOperar){
@@ -22,8 +33,11 @@ function appendOperator(signoOperar){
 
 // Función para operar y mostrar el resultado
 function calculateResult(){
-    let replaceOperator = operationDisplay.textContent.replace("÷", "/").replace("x","*");
-    let joinTerms = replaceOperator + currentDisplay.textContent;
+    let cleanOperation = cleanNumber(operationDisplay.textContent);
+    let cleanCurrent = cleanNumber(currentDisplay.textContent);
+
+    let replaceOperator = cleanOperation.replace("÷", "/").replace("x","*");
+    let joinTerms = replaceOperator + cleanCurrent;
 
     if(!joinTerms) return;
 
@@ -77,13 +91,14 @@ function calculateResult(){
     }
 
     // Mostrar resultado
-    resultDisplay.textContent = Number(result.toFixed(2));
+    resultDisplay.textContent = formatNumber(result);
 
     operationDisplay.textContent = joinTerms.replace("/","÷").replace("*","x");
     resultDisplay.style.display = "block";
     currentDisplay.style.display = "none";
 }
 
+// Reccorer listas
 // Mostrar numeros en pantalla calculadora
 buttonNumber.forEach((valorNumero) => {
     valorNumero.addEventListener("click", function(){
@@ -91,22 +106,29 @@ buttonNumber.forEach((valorNumero) => {
             return;
         }
 
-        if(currentDisplay.textContent === "0"){
-            currentDisplay.textContent = valorNumero.value;
+        let currentValue = cleanNumber(currentDisplay.textContent);
+
+        if(currentValue === "0"){
+            currentValue = valorNumero.value;
         }else{
-            currentDisplay.textContent += valorNumero.value;
+            currentValue += valorNumero.value;
         }
+
+        currentDisplay.textContent = formatNumber(currentValue);
     });
 });
 
+// Detectar Acciones
 // Agregar el punto decimal
 decimalPoint.addEventListener("click", function() {
+    let currentValue = cleanNumber(currentDisplay.textContent);
+
     // Evaluarl si ya hay un punto en el termino
-    if(currentDisplay.textContent.includes(".")){
+    if(currentValue.includes(".")){
         return;
-    } else {
-        currentDisplay.textContent += decimalPoint.value;
     }
+
+    currentDisplay.textContent = currentDisplay.textContent + decimalPoint.value;
 });
 
 // Agregar el simbolo de porcentaje
@@ -124,23 +146,19 @@ buttonPercentage.addEventListener("click", function(){
 
 // Funcionalidad de +/-
 buttonSign.addEventListener("click", function(){
-    let displayActive;
+    let displayActive = resultDisplay.style.display === "block"
+        ? resultDisplay
+        : currentDisplay;
 
-    if(resultDisplay.style.display === "block"){
-        displayActive = resultDisplay;
-    }else{
-        displayActive = currentDisplay;
-    }
-
-    let valueResult = displayActive.textContent;
+    let valueResult = cleanNumber(displayActive.textContent);
 
     if(valueResult === "0") return;
 
-    if(valueResult.startsWith("-")){
-        displayActive.textContent = valueResult.slice(1);
-    } else {
-        displayActive.textContent = "-" + valueResult;
-    }
+    let newValue = valueResult.startsWith("-")
+        ? valueResult.slice(1)
+        : "-" + valueResult;
+
+    displayActive.textContent = formatNumber(newValue);
 });
 
 // Detectar signo de operación presionado
