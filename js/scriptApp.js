@@ -5,6 +5,7 @@ const resultDisplay = document.querySelector('.result-operacion');
 const buttonNumber = document.querySelectorAll('.btn-num');
 const buttonOperator = document.querySelectorAll('.btn-op');
 const buttonPercentage = document.querySelector(".btn-percentage");
+const buttonSign = document.querySelector(".btn-sign");
 const allClear = document.querySelector('.all-clear');
 const decimalPoint = document.querySelector('.btn-deci');
 
@@ -121,6 +122,28 @@ buttonPercentage.addEventListener("click", function(){
     currentDisplay.textContent += "%";
 });
 
+// Funcionalidad de +/-
+buttonSign.addEventListener("click", function(){
+    let displayActive;
+
+    if(resultDisplay.style.display === "block"){
+        displayActive = resultDisplay;
+    }else{
+        displayActive = currentDisplay;
+    }
+
+    let valueResult = displayActive.textContent;
+
+    if(valueResult === "0") return;
+
+    if(valueResult.startsWith("-")){
+        displayActive.textContent = valueResult.slice(1);
+    } else {
+        displayActive.textContent = "-" + valueResult;
+    }
+});
+
+// Detectar signo de operación presionado
 buttonOperator.forEach((operatorValue) => {
     operatorValue.addEventListener("click", function(){
         
