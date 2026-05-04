@@ -27,9 +27,32 @@ function calculateResult(){
     if(!joinTerms) return;
 
     // Convertimos los números de String a un Array
-    let parts = joinTerms.split(/([+\-*/])/).map(p => {
+    let parts = joinTerms.split(/([+\-*/%])/).map(p => {
         return (isNaN(p) || p.trim() === "") ? p : Number(p);
     });
+
+    // Procesar porcentajes
+    for(let i = 0; i < parts.length; i++){
+        if(parts[i] === "%"){
+            let numr = parts[i - 1];
+            let previousOperator = parts[i - 2];
+
+            let resultPercentage;
+
+            if(previousOperator === "+" || previousOperator === "-"){
+                let base = parts[i - 3];
+                resultPercentage = base * (numr / 100);
+            }else{
+                // Para multiplicación y división
+                resultPercentage = numr / 100;
+            }
+
+            // Reemplazar número y % por el resultado
+            parts.splice(i - 1, 2, resultPercentage);
+
+            i--;
+        }
+    }
 
     // Realizar múltiplicación y divisón
     for(let i = 0; i < parts.length; i++){
@@ -63,6 +86,10 @@ function calculateResult(){
 // Mostrar numeros en pantalla calculadora
 buttonNumber.forEach((valorNumero) => {
     valorNumero.addEventListener("click", function(){
+        if(currentDisplay.textContent.includes("%")){
+            return;
+        }
+
         if(currentDisplay.textContent === "0"){
             currentDisplay.textContent = valorNumero.value;
         }else{
@@ -79,6 +106,19 @@ decimalPoint.addEventListener("click", function() {
     } else {
         currentDisplay.textContent += decimalPoint.value;
     }
+});
+
+// Agregar el simbolo de porcentaje
+buttonPercentage.addEventListener("click", function(){
+    if(currentDisplay.textContent.includes("%")){
+        return;
+    }
+
+    if(currentDisplay.textContent === "0"){
+        return;
+    }
+
+    currentDisplay.textContent += "%";
 });
 
 buttonOperator.forEach((operatorValue) => {
